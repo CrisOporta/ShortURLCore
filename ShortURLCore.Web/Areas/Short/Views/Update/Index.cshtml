@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Actualizaciones";
+    var applied = (IReadOnlyList<string>)ViewBag.Applied ?? new List<string>();
+    var pending = (IReadOnlyList<string>)ViewBag.Pending ?? new List<string>();
+}
+
+<div class="container mt-4">
+    <h2>Actualizaciones de Base de Datos</h2>
+
+    @if (TempData["Message"] is string msg)
+    {
+        <div class="alert alert-info">@msg</div>
+    }
+
+    @if (TempData["Output"] is string output && !string.IsNullOrWhiteSpace(output))
+    {
+        <details class="mb-3">
+            <summary>Salida del comando</summary>
+            <pre class="bg-light p-2">@output</pre>
+        </details>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <h5>Pendientes (@pending.Count)</h5>
+            @if (pending.Count == 0)
+            {
+                <p class="text-success">No hay migraciones pendientes.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var m in pending)
+                    {
+                        <li>@m</li>
+                    }
+                </ul>
+                <form asp-area="Short" asp-controller="Update" asp-action="Apply" method="post">
+                    <button type="submit" class="btn btn-primary">Aplicar migraciones</button>
+                    @Html.AntiForgeryToken()
+                </form>
+            }
+        </div>
+        <div class="col-md-6">
+            <h5>Aplicadas (@applied.Count)</h5>
+            @if (applied.Count == 0)
+            {
+                <p>No hay migraciones aplicadas aún.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var m in applied)
+                    {
+                        <li>@m</li>
+                    }
+                </ul>
+            }
+
+            <hr />
+            <h5>Crear migración (solo Development)</h5>
+            <form asp-area="Short" asp-controller="Update" asp-action="CreateMigration" method="post" class="row g-2">
+                <div class="col-auto">
+                    <input type="text" name="name" class="form-control" placeholder="Nombre de la migración" required />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-secondary">Crear</button>
+                </div>
+                @Html.AntiForgeryToken()
+            </form>
+            <small class="text-muted">Requiere SDK de .NET y dotnet-ef instalados en el entorno.</small>
+        </div>
+    </div>
+</div>

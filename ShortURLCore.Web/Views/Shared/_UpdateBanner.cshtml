@@ -1,0 +1,12 @@
+@using ShortURLCore.Web.Services.IServices
+@inject IUpdateService UpdateService
+@{
+    var pending = await UpdateService.GetPendingMigrations();
+}
+@if (pending.Any())
+{
+    <div class="alert alert-warning m-0 text-center" role="alert">
+        Hay @pending.Count migración(es) de base de datos pendientes.
+        <a asp-area="Short" asp-controller="Update" asp-action="Index" class="alert-link">Ir a actualizaciones</a>.
+    </div>
+}

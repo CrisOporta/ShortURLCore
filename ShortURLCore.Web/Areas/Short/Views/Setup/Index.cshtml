@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Setup Wizard";
+}
+<h2>Wizard de instalación - Acortador de URL</h2>
+<form method="post">
+    <input name="host" placeholder="Host" required />
+    <input name="port" placeholder="Puerto" required />
+    <input name="dbName" placeholder="Nombre DB" required />
+    <input name="user" placeholder="Usuario" required />
+    <input name="pass" placeholder="Contraseña" type="password" required />
+    <button type="submit">Instalar</button>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div style="color:red">
+        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@err.ErrorMessage</p>
+        }
+    </div>
+}
